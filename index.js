@@ -13,14 +13,21 @@ io.on('connection', (socket) => {
 
   socket.on('send', (message, roomId) => socket.to(roomId).emit('receive', message));
 
-  socket.on('join', (roomId, cb) => {
+  socket.on('join', async (roomId, cb) => {
     socket.join(roomId);
-    cb(`Joined ${roomId}`);
+    const result = await io.in(roomId).fetchSockets();
+    const userCount = result.length;
+    socket.to(roomId).emit('countUser', userCount);
+    cb(userCount);
     console.log(`${socket.id} joined room ${roomId}`);
   });
 
-  socket.on('leave', (roomId) => {
+  socket.on('leave', async (roomId, cb) => {
     socket.leave(roomId);
+    const result = await io.in(roomId).fetchSockets();
+    const userCount = result.length;
+    socket.to(roomId).emit('countUser', userCount);
+    cb(userCount);
     console.log(`${socket.id} left room ${roomId}`);
   });
 
