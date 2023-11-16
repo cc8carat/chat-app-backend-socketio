@@ -12,7 +12,7 @@ COPY . /app
 RUN npm install
 
 # Expose port 5001
-EXPOSE 5000
+EXPOSE 6001
 
 # Define the entry point for the container
 CMD ["npm", "start"]
